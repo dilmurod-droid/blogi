@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/style_register.css' %}">
+{% endblock css %}
+
+{% block title %}
+{% if form.errors  %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+          </div>
+{% endif %}
+  <div class="container">
+    <div class="title">Registration</div>
+    <div class="content">
+      <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="user-details">
+          <div class="input-box">
+            <span class="details">Ism</span>
+            <input type="text" placeholder="Ismingizni kiriting" required name="{{ form.first_name.name }}">
+          </div>
+          <div class="input-box">
+            <span class="details">Familiya</span>
+            <input type="text" placeholder="Enter your last name" required name="{{ form.last_name.name }}">
+          </div>
+          <div class="input-box">
+            <span class="details">Email</span>
+            <input type="email" placeholder="Enter your email" required name="{{ form.email.name }}">
+          </div>
+
+          <div class="input-box">
+            <span class="details">Username</span>
+            <input type="text" placeholder="Enter your username" required name="{{ form.username.name }}">
+          </div>
+          <div class="input-box">
+            <span class="details">Password</span>
+            <input type="text" placeholder="Enter your password" required name="{{ form.password1.name }}">
+          </div>
+          <div class="input-box">
+            <span class="details">Confirm Password</span>
+            <input type="text" placeholder="Confirm your password" required name="{{ form.password2.name }}">
+          </div>
+        </div>
+        <div class="input-box">
+            <span class="details">Profile-img</span>
+            <input type="file"  required name="{{ form.photo.name }}">
+          </div><br>
+        <div class="gender-details">
+          <input type="radio" name="{{ form.gender.name }}" value="male" id="dot-1">
+          <input type="radio" name="{{ form.gender.name }}" value="female" id="dot-2">
+          <span class="gender-title">Jins</span>
+          <div class="category">
+            <label for="dot-1">
+            <span class="dot one"></span>
+            <span class="gender">Erkak</span>
+          </label>
+          <label for="dot-2">
+            <span class="dot two"></span>
+            <span class="gender">Ayol</span>
+          </label>
+          </div>
+        </div>
+        <div class="button">
+          <input type="submit" value="Register">
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

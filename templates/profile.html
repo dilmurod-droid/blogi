@@ -1,0 +1,65 @@
+{% extends "base.html"%}
+{% block title %}
+{% load static %}
+{% block css %}
+    <style>
+        .container-2{
+         max-width=100px
+        }
+    </style>
+{% endblock %}
+<div class="">
+     {% if user.photo %}
+        <img style="border-radius:50%" width="100px" height="100px" src="{{ user.photo.url }}">
+    {% else %}
+        <img style="border-radius:50%" width="100px" height="100px" src="{%static 'img/user.jpg'%}">
+    {% endif %}
+    <h2>{{user.username}}</h2>
+    <h2>{{user.email}}</h2>
+
+    <a href="{% url 'notifications' %}">
+<!--        <img width="25px" src="{%static 'img/notification.png'%}">-->
+        <img src="data:image/png;base64,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">
+    </a>
+    <a href="{% url 'edit_profile' user.pk%}">
+        ✏️
+    </a>
+</div>
+<div class="d-flex flex-wrap profile-details">
+            {% for blogs in blogs %}
+           <article class=" col-12 col-md-6 tm-post">
+                    <hr class="tm-hr-primary">
+                    <a href="{%url 'detail' blogs.slug%}" class="effect-lily tm-post-link tm-pt-60">
+                        <div class="tm-post-link-inner">
+                            {% if blogs.photo %}
+                             <img src="{{ blogs.photo.url }}">
+                            {% endif %}
+                           {% if blogs.video %}
+                             <video width="120px" height="40px" controls>
+                                  <source src="{{ blogs.video.url }}" type="video/mp4">
+                                    <source src="movie.ogg" type="video/ogg">
+                             Your browser does not support the video tag.
+                             </video>
+                            {% endif %}
+
+                        </div>
+                        {% if blogs.created_time >= now|date:'U'|add:'-604800' %}
+                        <span class="position-absolute tm-new-badge">New</span>
+                        {% endif %}
+                        <h2 class="tm-pt-30 tm-color-primary tm-post-title">{{ blogs.title }}</h2>
+                    </a>
+                    <p class="tm-pt-30">
+                        {{ blogs.body }}
+                    </p>
+                    <div class="d-flex justify-content-between tm-pt-45">
+                        <span class="tm-color-primary">{% for tag in blogs.tags.all %} #{{ tag.name }} {% endfor %}</span>
+                        <span class="tm-color-primary">{{ blogs.created_time }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span>{{ blogs.comments.count }}</span>
+                        <span>{{ blogs.author }}</span>
+                    </div>
+                </article>
+                {% endfor %}
+{% endblock  %}

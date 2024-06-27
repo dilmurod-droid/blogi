@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/detail.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTTXwIS0LlRLaC+zAIsq5TGjlUn+Jp2G0p5Ij5L4n6pGURtprKpOfb/CxKwUuk+0rrvXQHszg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+ <div class="container mt-5">
+        <div class="card mb-4 shadow-lg border-0">
+            <div class="card-body">
+                <header class="mb-3">
+                    <h1 class="card-title display-4">{{ object.title }}</h1>
+                    <p class="text-muted">By <span class="fw-bold">{{ object.author.username }}</span> on {{ object.created_time }}</p>
+                </header>
+                <img src="{{ object.photo.url }}" class="img-fluid rounded mb-4" alt="{{ object.title }}">
+                <article class="mt-4">
+                    <p>{{ object.body }}</p>
+                </article>
+                <div class="like-section mt-4 d-flex align-items-center">
+                    <form class="d-flex align-items-center like-form" id="like-form">
+                        {% csrf_token %}
+                        <button type="button" class="btn btn-like" id="like-button">
+                            <img src="{% static 'img/like-empty.png' %}" id="like-icon" alt="Like" class="like-icon">
+                        </button>
+                        <span class="ms-3" id="like-count">Likes: {{ like_count }}</span>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <section class="comments mb-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-body">
+
+                        <h2 class="card-title h4">Comments</h2>
+                    <form id="comment-form" class="mb-4">
+                        {% csrf_token %}
+                        {{ comment_form.as_p }}
+                        <button type="button" id="comment-submit" class="btn btn-success">Add Comment</button>
+                    </form>
+                    <ul class="list-unstyled" id="comments-list">
+                        {% for comment in comments %}
+
+                            <li class="media mb-3 border-bottom pb-3" id="comment-{{ comment.id }}">
+                                <img src="{{ comment.author.photo.url }}" class="mr-3 rounded-circle comment-avatar" alt="User avatar">
+                                <div class="media-body ms-3">
+                                    <a href="{% url 'view_profile' username=comment.author.username%}">
+                                    <h5 class="mt-0 mb-1">{{ comment.author.username }}</h5>
+                                     </a>
+                                    <p>{{ comment.body }}</p>
+                                    <p class="text-muted"><small>{{ comment.created_time }}</small></p>
+                                    {% if comment.author == request.user %}
+                                        <button type="button" class="btn btn-sm btn-danger delete-comment" data-comment-id="{{ comment.id }}">Delete</button>
+                                    {% endif %}
+                                </div>
+                            </li>
+
+                        {% endfor %}
+                    </ul>
+
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+    <script>
+       $(document).ready(function() {
+            $('#like-button').click(function() {
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'like_post' object.slug %}",
+                    data: {
+                        'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val()
+                    },
+                    success: function(response) {
+                        if (response.liked) {
+                            $('#like-icon').attr('src', '{% static "img/unlike.png" %}');
+                        } else {
+                            $('#like-icon').attr('src', '{% static "img/like-empty.png" %}');
+                        }
+                        $('#like-count').text('Likes: ' + response.like_count);
+                    }
+                });
+            });
+
+            // Comment submit button click handler
+            $('#comment-submit').click(function() {
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'comment_post' object.slug %}",
+                    data: $('#comment-form').serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            // Create a new list item for the comment
+                            var newComment = `
+                                <li class="media mb-3 border-bottom pb-3" id="comment-${response.comment.id}">
+                                    <img src="${response.comment.img}" class="mr-3 rounded-circle comment-avatar" alt="User avatar">
+                                    <div class="media-body ms-3">
+                                        <h5 class="mt-0 mb-1">${response.comment.author.username}</h5>
+                                        <p>${response.comment.body}</p>
+                                        <p class="text-muted"><small>${response.comment.created_time}</small></p>
+                                        <button type="button" class="btn btn-sm btn-danger delete-comment" data-comment-id="${response.comment.id}">Delete</button>
+                                    </div>
+                                </li>
+                            `;
+                            // Insert the new comment at the beginning of the comments list
+                            $('#comments-list').prepend(newComment);
+
+                            // Reset the comment form
+                            $('#comment-form')[0].reset();
+                        }
+                    }
+                });
+            });
+
+            // Delete comment button click handler
+            $(document).on('click', '.delete-comment', function() {
+                var commentId = $(this).data('comment-id');
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'comment_delete' object.slug %}",
+                    data: {
+                        'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
+                        'comment_id': commentId
+                    },
+                    success: function(response) {
+                        if (response.deleted) {
+                            $('#comment-' + commentId).remove();
+                        } else {
+                            alert('You are not authorized to delete this comment.');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock title %}

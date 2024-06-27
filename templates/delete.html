@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+   {% if user == object.author %}
+     <p>Are you sure you want to delete "{{ object.title }}"?</p>
+        <form method="post">{% csrf_token %}
+            <input type="submit" value="Confirm">
+        </form>
+        <a href="{% url 'home' %}">Cancel</a>
+    {% else %}
+        <h1>siz bu blog author emassiz shuning uchun bu sahifani tark eting!!!</h1>
+        <a href="{% url 'home' %}">ortga!!!</a>
+    {% endif %}
+{% endblock title %}

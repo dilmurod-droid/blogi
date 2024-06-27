@@ -1,0 +1,38 @@
+{% extends "base.html"%}
+{% block title %}
+{% block css %}
+    <style>
+        .messages {
+            list-style: none;
+            padding: 0;
+        }
+        .messages li {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .messages .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+{% endblock %}
+    <h1>Notifications</h1>
+
+    {% if notifications %}
+        <ul class="messages">
+            {% for notification in notifications %}
+                <li class="info">
+                    {{ notification.message }}
+                    <a href="{% url 'mark_notification_as_read' notification.pk %}">Mark as read</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No new notifications.</p>
+    {% endif %}
+
+    <a href="{% url 'profile' user.username%}">Back to Profile</a>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html"%}
+{% block title %}
+{% block css %}
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Your custom styles here */
+        .profile-card {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .profile-info {
+            margin-top: 20px;
+        }
+    </style>
+{% endblock %}
+
+<div class="container">
+    <div class="profile-card">
+        <div class="text-center">
+            <img src="{{profile_user.photo.url}}" alt="{{ profile_user.username }}'s avatar" class="profile-avatar">
+            <h1>{{ profile_user.username }}</h1>
+        </div>
+        <div class="profile-info mt-4">
+            <p><strong>Email:</strong> {{ profile_user.email }}</p>
+            <p><strong>First Name:</strong> {{ profile_user.first_name }}</p>
+            <p><strong>Last Name:</strong> {{ profile_user.last_name }}</p>
+            <p><strong>Joined:</strong> {{ profile_user.date_joined|date:"F d, Y" }}</p>
+            <a href="{% url  'home' %}">go to home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

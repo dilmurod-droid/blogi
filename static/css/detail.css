@@ -1,0 +1,35 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.card-title {
+    font-size: 2em;
+    margin: 0;
+}
+
+.like-section {
+    display: flex;
+    align-items: center;
+}
+
+.like-section button {
+    font-size: 1.2em;
+}
+
+.comments .card-title {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.media img {
+    width: 64px;
+    height: 64px;
+}
+
+.media-body h5 {
+    font-size: 1.1em;
+}
